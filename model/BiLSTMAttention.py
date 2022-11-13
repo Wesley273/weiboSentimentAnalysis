@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from dataset import word2id
-from model.gensim_word2vec import build_embdding_matrix
+from model.Word2Vec import build_embdding_matrix
 
 embedding_path="word2vec.bin"
 
