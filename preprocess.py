@@ -1,20 +1,22 @@
-import pynlpir
-import jieba
 import json
 import re
 
-ignore_chars = ["/","@","【","】","#",":","[","]"]
+import pynlpir
+
+ignore_chars = ["/", "@", "【", "】", "#", ":", "[", "]"]
+
 
 def loadStopWords(data_path):
     """
     功能：加载停用词
     """
     stop_words = []
-    with open(data_path,"r") as fp:
+    with open(data_path, "r") as fp:
         for line in fp.readlines():
             stop_words.append(line.strip())
     # print(stop_words)
     return stop_words
+
 
 def weibo_process(content):
     """
@@ -59,13 +61,13 @@ def weibo_process(content):
     return processed_content
 
 
-def datasetProcess(org_path,save_path,stop_words):
+def datasetProcess(org_path, save_path, stop_words):
     """
     功能：过滤出微博内容重点中文并进行分词
     """
     outcome = []
-    with open(org_path,"r",encoding="utf-8") as fp:
-        for idx,item in enumerate(json.load(fp)):
+    with open(org_path, "r", encoding="utf-8") as fp:
+        for idx, item in enumerate(json.load(fp)):
             print("processing item {}".format(idx))
             content = item.get("content")
             label = item.get("label")
@@ -78,18 +80,19 @@ def datasetProcess(org_path,save_path,stop_words):
                     continue
                 if word not in stop_words:
                     words.append(word)
-            outcome.append({"content":words,"label":label})
-    
-    with open(save_path,"w",encoding="utf-8") as fp:
-        json.dump(outcome,fp,ensure_ascii=False)
+            outcome.append({"content": words, "label": label})
 
-def getWordDict(data_path,min_count=5):
+    with open(save_path, "w", encoding="utf-8") as fp:
+        json.dump(outcome, fp, ensure_ascii=False)
+
+
+def getWordDict(data_path, min_count=5):
     """
     功能：构建单词词典
     """
     word2id = {}
     # 统计词频
-    with open(data_path,"r",encoding="utf-8") as fp:
+    with open(data_path, "r", encoding="utf-8") as fp:
         for item in json.load(fp):
             for word in item['content']:
                 if word2id.get(word) == None:
@@ -98,21 +101,22 @@ def getWordDict(data_path,min_count=5):
                     word2id[word] += 1
     # 过滤低频词
     vocab = set()
-    for word,count in word2id.items():
+    for word, count in word2id.items():
         if count >= min_count:
             vocab.add(word)
 
     # 构成单词到索引的映射词典
-    word2id = {"PAD":0,"UNK":1}
+    word2id = {"PAD": 0, "UNK": 1}
     length = 2
     for word in vocab:
         word2id[word] = length
         length += 1
-    with open("datasets/word2id.json",'w',encoding="utf-8") as fp:
-        json.dump(word2id,fp,ensure_ascii=False)
+    with open("datasets/word2id.json", 'w', encoding="utf-8") as fp:
+        json.dump(word2id, fp, ensure_ascii=False)
+
 
 if __name__ == "__main__":
     # stop_words = loadStopWords(data_path="中文停用词词表.txt")
     # datasetProcess("datasets/train_org.txt","datasets/train.txt",stop_words)
     # datasetProcess("datasets/test_org.txt","datasets/test.txt",stop_words)
-    getWordDict(data_path="datasets/train.txt",min_count=5)
+    getWordDict(data_path="datasets/train.txt", min_count=5)

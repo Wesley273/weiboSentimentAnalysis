@@ -1,6 +1,8 @@
 import json
+
 import numpy as np
 from gensim.models import word2vec
+
 
 def load_pretrained_embedding(embedding_path):
     """

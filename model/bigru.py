@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from data_loader import word2id
-from gensim_word2vec import build_embdding_matrix
+from dataset import word2id
+from model.gensim_word2vec import build_embdding_matrix
 
 embedding_path="word2vec.bin"
 
@@ -38,6 +38,3 @@ class BiGRU(nn.Module):
         x = self.dropout(x)
         x = self.decoder(torch.mean(x,dim=1))
         return x
-
-if __name__ == "__main__":
-    pass
