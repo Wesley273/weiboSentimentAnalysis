@@ -45,10 +45,10 @@ class WeiBoDataset(data.Dataset):
 
 if __name__ == "__main__":
     train_path = "datasets/train.txt"
-    wddataset = WeiBoDataset(train_path)
-    print(len(wddataset))
+    wbdataset = WeiBoDataset(train_path)
+    print(len(wbdataset))
     train_iter = data.DataLoader(
-        dataset=wddataset,
+        dataset=wbdataset,
         batch_size=64
     )
     for x, y in train_iter:
