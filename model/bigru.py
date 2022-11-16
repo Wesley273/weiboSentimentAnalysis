@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+
 from dataset import word2id
 from model.Word2Vec import build_embdding_matrix
 
