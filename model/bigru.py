@@ -8,7 +8,7 @@ embedding_path = "word2vec.bin"
 
 
 class BiGRU(nn.Module):
-    def __init__(self, embedding_dim, hidden_size, output_size, drop_prob, word2vec_embedding=True):
+    def __init__(self, embedding_dim, hidden_size, output_size, drop_rate, word2vec_embedding=True):
         super(BiGRU, self).__init__()
         if word2vec_embedding:
             embedding_matrix = build_embdding_matrix(
@@ -26,16 +26,16 @@ class BiGRU(nn.Module):
             input_size=embedding_dim,
             hidden_size=hidden_size,
             batch_first=True,
-            dropout=drop_prob
+            dropout=drop_rate
         )
         self.batchnorm = nn.BatchNorm1d(84)
-        self.dropout = nn.Dropout(drop_prob)
-        self.decoder = nn.Linear(hidden_size * 2, output_size)
+        self.dropout = nn.Dropout(drop_rate)
+        self.fc = nn.Linear(hidden_size * 2, output_size)
 
     def forward(self, x):
         x = self.embeds(x)
         x, _ = self.gru(x)
         x = self.batchnorm(x)
         x = self.dropout(x)
-        x = self.decoder(torch.mean(x, dim=1))
+        x = self.fc(torch.mean(x, dim=1))
         return x
