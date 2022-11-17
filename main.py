@@ -117,14 +117,14 @@ if __name__ == "__main__":
             hidden_size=args.hidden_size,
             output_size=output_size,
             drop_prob=args.drop_prob,
-            extra_embedding=args.extra_embedding)
+            word2vec_embedding=args.extra_embedding)
     elif args.model == "bilstm_attention":
         model = BiLSTMAttention(
             embedding_dim=args.embedding_dim,
             hidden_size=args.hidden_size,
             output_size=output_size,
             drop_prob=args.drop_prob,
-            extra_embedding=args.extra_embedding)
+            word2vec_embedding=args.extra_embedding)
     print("loading model done!!!")
 
     iscuda = False

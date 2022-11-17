@@ -9,11 +9,11 @@ embedding_path = "word2vec.bin"
 
 
 class BiLSTMAttention(nn.Module):
-    def __init__(self, embedding_dim, hidden_size, drop_prob, output_size, extra_embedding):
+    def __init__(self, embedding_dim, hidden_size, drop_prob, output_size, word2vec_embedding):
         super(BiLSTMAttention, self).__init__()
         self.hidden_size = hidden_size
         self.output_size = output_size
-        if extra_embedding:
+        if word2vec_embedding:
             embedding_matrix = build_embdding_matrix(
                 word_dict=word2id,
                 embedding_path=embedding_path,

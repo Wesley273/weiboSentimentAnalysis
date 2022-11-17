@@ -39,11 +39,11 @@ def build_embdding_matrix(word_dict,embedding_path,embedding_dim):
 
 if __name__ == "__main__":
     train_path = "datasets/train.txt"
-    sents = []
+    dataset = []
     with open(train_path,"r",encoding="utf-8") as fp:
         for item in json.load(fp):
-            sents.append(item['content'])
-    model = word2vec.Word2Vec(sents, vector_size=100, window=10, min_count=5,epochs=15,sg=1) 
+            dataset.append(item['content'])
+    model = word2vec.Word2Vec(dataset, vector_size=100, window=10, min_count=5,epochs=15,sg=1) 
     model.wv.save_word2vec_format('word2vec.bin',binary=False)
 
 
