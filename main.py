@@ -123,7 +123,7 @@ if __name__ == "__main__":
             embedding_dim=args.embedding_dim,
             hidden_size=args.hidden_size,
             output_size=output_size,
-            drop_prob=args.drop_prob,
+            drop_rate=args.drop_prob,
             word2vec_embedding=args.extra_embedding)
     print("loading model done!!!")
 

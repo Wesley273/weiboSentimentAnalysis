@@ -9,7 +9,7 @@ embedding_path = "word2vec.bin"
 
 
 class BiLSTMAttention(nn.Module):
-    def __init__(self, embedding_dim, hidden_size, drop_prob, output_size, word2vec_embedding):
+    def __init__(self, embedding_dim, hidden_size, drop_rate, output_size, word2vec_embedding):
         super(BiLSTMAttention, self).__init__()
         self.hidden_size = hidden_size
         self.output_size = output_size
@@ -23,32 +23,32 @@ class BiLSTMAttention(nn.Module):
         else:
             self.embeds = nn.Embedding(len(word2id), embedding_dim)
             nn.init.uniform_(self.embeds.weight)
-        self.encoder = nn.LSTM(
+        self.lstm = nn.LSTM(
             input_size=embedding_dim,
             hidden_size=self.hidden_size,
             num_layers=2,
             bidirectional=True,
-            dropout=drop_prob
+            dropout=drop_rate
         )
 
         self.weight_W = nn.Parameter(torch.Tensor(2*hidden_size, 2*hidden_size))
         self.weight_proj = nn.Parameter(torch.Tensor(2*hidden_size, 1))
 
-        self.decoder1 = nn.Linear(hidden_size * 2, hidden_size)
-        self.decoder2 = nn.Linear(hidden_size, output_size)
+        self.fc1 = nn.Linear(hidden_size * 2, hidden_size)
+        self.fc2 = nn.Linear(hidden_size, output_size)
 
         nn.init.uniform_(self.weight_W, -0.1, 0.1)
         nn.init.uniform_(self.weight_proj, -0.1, 0.1)
 
     def forward(self, inputs):
         embeddings = self.embeds(inputs)
-        states, _ = self.encoder(embeddings.permute([0, 1, 2]))
+        states, _ = self.lstm(embeddings.permute([0, 1, 2]))
         # attention
         u = torch.tanh(torch.matmul(states, self.weight_W))
         att = torch.matmul(u, self.weight_proj)
         att_score = F.softmax(att, dim=1)
         scored_x = states * att_score
         encoding = torch.sum(scored_x, dim=1)
-        outputs = self.decoder1(encoding)
-        outputs = self.decoder2(outputs)
+        outputs = self.fc1(encoding)
+        outputs = self.fc2(outputs)
         return outputs
